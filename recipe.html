@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('simmer-theme');
+        document.documentElement.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    html { background: #FBFAF6; color: #171A17; }
+    html[data-theme="dark"] { background: #14170F; color: #F2F5EF; }
+    body { background: inherit; color: inherit; }
+  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Savor Recipe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FBFAF6;
+      --bg-elevated: #EFF1EA;
+      --surface: #F7F3EE;
+      --surface-strong: #F0E6DD;
+      --ink: #171A17;
+      --ink-muted: #5B665C;
+      --line: rgba(23, 26, 23, 0.13);
+      --header-bg: rgba(251, 250, 246, 0.96);
+      --header-ink: #171A17;
+      --header-muted: #3F4A40;
+      --coral: #E85A3B;
+      --herb: #2F6B47;
+      --ocean: #2A6E8C;
+      --gold: #B87D00;
+      --panel-bg: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(239,241,234,0.8));
+      --panel-item-bg: rgba(255,255,255,0.12);
+      --panel-item-border: rgba(23, 26, 23, 0.13);
+      --meta-chip-bg: rgba(255,255,255,0.2);
+      --step-badge-bg: rgba(232, 90, 59, 0.1);
+      --display: 'Bricolage Grotesque', sans-serif;
+      --body: 'Work Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #14170F;
+      --bg-elevated: #1F231C;
+      --surface: #1A211B;
+      --surface-strong: #232C27;
+      --ink: #F2F5EF;
+      --ink-muted: #BFC9BE;
+      --line: rgba(242, 245, 239, 0.12);
+      --header-bg: rgba(20, 23, 15, 0.86);
+      --header-ink: #F2F5EF;
+      --header-muted: #C7D0C8;
+      --coral: #FF7A57;
+      --herb: #5FA97A;
+      --ocean: #59B0D3;
+      --gold: #E8AC2E;
+      --panel-bg: linear-gradient(180deg, rgba(31, 35, 28, 0.9), rgba(26, 33, 27, 0.96));
+      --panel-item-bg: rgba(246, 241, 233, 0.03);
+      --panel-item-border: rgba(242, 245, 239, 0.12);
+      --meta-chip-bg: rgba(255,255,255,0.04);
+      --step-badge-bg: rgba(255, 122, 87, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      animation: pageIn 0.48s var(--ease);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--header-bg);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+      gap: 20px;
+    }
+
+    .wordmark {
+      text-decoration: none;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      color: var(--header-ink);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--header-muted);
+    }
+
+    .nav a { text-decoration: none; color: var(--header-muted); }
+    .nav .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--header-ink);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: var(--bg-elevated);
+      color: var(--header-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), border-color 0.2s ease;
+    }
+
+    .theme-toggle:hover { transform: translateY(-1px) rotate(-8deg); }
+    .theme-toggle svg { width: 17px; height: 17px; }
+    .theme-toggle .icon-moon { display: none; }
+    html[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+    .recipe-shell {
+      padding: 46px 0 80px;
+    }
+
+    .recipe-hero {
+      display: grid;
+      grid-template-columns: minmax(300px, 1fr) minmax(250px, 0.85fr);
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .recipe-cover {
+      min-height: 420px;
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 24px 54px -36px rgba(0,0,0,0.38);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .recipe-cover::after {
+      content: 'Recipe detail';
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: white;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .recipe-tag {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--coral);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 5vw, 4.3rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 12ch;
+      margin-bottom: 18px;
+    }
+
+    .summary {
+      max-width: 58ch;
+      color: var(--ink-muted);
+      font-size: 1.04rem;
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta span {
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--meta-chip-bg);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel-bg);
+      padding: 22px;
+      box-shadow: 0 16px 30px -28px rgba(0,0,0,0.34);
+    }
+
+    .panel h2 {
+      font-family: var(--display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .info-list, .steps {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .info-list li {
+      padding: 10px 12px;
+      border: 1px solid var(--panel-item-border);
+      border-radius: 12px;
+      background: var(--panel-item-bg);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-list li::before {
+      content: '•';
+      color: var(--coral);
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .steps li {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+      padding: 14px 12px;
+      border: 1px solid var(--panel-item-border);
+      border-radius: 14px;
+      background: var(--panel-item-bg);
+    }
+
+    .steps strong {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--step-badge-bg);
+      color: var(--coral);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      border: 1px solid color-mix(in srgb, var(--coral) 25%, transparent);
+    }
+
+    .steps p {
+      color: var(--ink-muted);
+      line-height: 1.7;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: minmax(250px, 0.8fr) minmax(300px, 1.2fr);
+      gap: 24px;
+      margin-top: 30px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 34px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--ink-muted);
+    }
+
+    @media (max-width: 780px) {
+      .recipe-hero, .section-grid { grid-template-columns: 1fr; }
+      .recipe-cover { min-height: 300px; }
+      .header-row { flex-wrap: wrap; gap: 14px; padding: 16px 18px; }
+      .nav { flex-wrap: wrap; gap: 10px; justify-content: flex-start; }
+      .header-right { width: 100%; justify-content: space-between; }
+      .meta { flex-wrap: wrap; gap: 10px; }
+      .panel { padding: 18px; }
+      .back-btn { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 580px) {
+      .recipe-shell { padding: 30px 0 60px; }
+      .recipe-cover { min-height: 240px; }
+      .recipe-hero { gap: 20px; }
+      .panel { border-radius: 20px; }
+      .back-btn { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap header-row">
+      <a href="index.html" class="wordmark">Savor</a>
+      <div class="header-right">
+        <nav class="nav" aria-label="Main navigation">
+          <a href="index.html">Featured</a>
+          <a href="recipes.html">Recipes</a>
+          <a href="recipes.html" class="back-link" data-back="archive">← Back</a>
+        </nav>
+        <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.5"/>
+            <path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap recipe-shell">
+    <article>
+      <div class="recipe-hero">
+        <div class="recipe-cover" id="recipeCover"></div>
+        <div>
+          <span class="recipe-tag" id="recipeTag">Tonight's table</span>
+          <h1 id="recipeTitle">Recipe title</h1>
+          <p class="summary" id="recipeSummary"></p>
+          <div class="meta" id="recipeMeta"></div>
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <section class="panel">
+          <h2>Ingredients</h2>
+          <ul class="info-list" id="recipeIngredients"></ul>
+        </section>
+
+        <section class="panel">
+          <h2>Method</h2>
+          <ol class="steps" id="recipeSteps"></ol>
+        </section>
+      </div>
+
+      <a href="recipes.html" class="back-btn" data-back="archive">Browse more recipes</a>
+    </article>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="recipe-data.js"></script>
+  <script src="supabase-client.js"></script>
+  <script>
+    const titleEl = document.getElementById('recipeTitle');
+    const coverEl = document.getElementById('recipeCover');
+    const tagEl = document.getElementById('recipeTag');
+    const summaryEl = document.getElementById('recipeSummary');
+    const metaEl = document.getElementById('recipeMeta');
+    const ingredientsEl = document.getElementById('recipeIngredients');
+    const stepsEl = document.getElementById('recipeSteps');
+    const params = new URLSearchParams(window.location.search);
+    const id = Number(params.get('id'));
+
+    function renderRecipe(recipe) {
+      if (!recipe) {
+        titleEl.textContent = 'Recipe not found';
+        summaryEl.textContent = 'This recipe is no longer available.';
+        coverEl.style.background = '';
+        metaEl.innerHTML = '';
+        ingredientsEl.innerHTML = '';
+        stepsEl.innerHTML = '';
+        return;
+      }
+
+      const normalizedRecipe = normalizeRecipe(recipe);
+      coverEl.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.26)), url("' + normalizedRecipe.image + '") center/cover no-repeat';
+      tagEl.textContent = normalizedRecipe.tag || '';
+      titleEl.textContent = normalizedRecipe.title || 'Recipe';
+      summaryEl.textContent = normalizedRecipe.summary || '';
+      metaEl.innerHTML = [normalizedRecipe.category, ...(normalizedRecipe.meta || [])].map(item => '<span>' + item + '</span>').join('');
+      ingredientsEl.innerHTML = (recipe.ingredients || []).map(item => '<li>' + item + '</li>').join('');
+      stepsEl.innerHTML = (recipe.steps || []).map((step, index) => '<li><strong>' + (index + 1) + '</strong><p>' + step + '</p></li>').join('');
+    }
+
+    function getLocalRecipe() {
+      const localRecipes = window.SAVOR_RECIPES || [];
+      const queryId = new URLSearchParams(window.location.search).get('id');
+      return localRecipes.find((item) => item.id === id || String(item.id) === queryId) || null;
+    }
+
+    async function loadRemoteRecipe() {
+      try {
+        return await getRecipeById(id);
+      } catch (error) {
+        console.warn('Failed to load recipe from Supabase, using local fallback.', error);
+        return { status: 'fallback_error', recipe: null };
+      }
+    }
+
+    async function init() {
+      // If a recipe was saved to sessionStorage by the list page, render it immediately
+      try {
+        const stored = sessionStorage.getItem('savor_selected_recipe');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && parsed.id != null) {
+            renderRecipe(parsed);
+          }
+          // remove it to avoid stale data on subsequent navigations
+          sessionStorage.removeItem('savor_selected_recipe');
+        }
+      } catch (e) {}
+
+      // Always attempt to fetch the canonical remote recipe and update when available
+      const remoteResult = await loadRemoteRecipe();
+      if (remoteResult?.status === 'remote' && remoteResult.recipe) {
+        renderRecipe(remoteResult.recipe);
+        return;
+      }
+
+      // If remote fetch failed or recipe not found, fall back to local data (if not already rendered)
+      const localRecipe = getLocalRecipe();
+      if (localRecipe) {
+        renderRecipe(normalizeRecipe(localRecipe));
+        return;
+      }
+
+      if (remoteResult?.status === 'not_found') {
+        titleEl.textContent = 'Recipe not found';
+        summaryEl.textContent = 'This recipe has been removed or is unavailable.';
+        coverEl.style.background = '';
+        metaEl.innerHTML = '';
+        ingredientsEl.innerHTML = '';
+        stepsEl.innerHTML = '';
+      } else {
+        titleEl.textContent = 'Recipe not found';
+        summaryEl.textContent = 'We could not locate that recipe.';
+      }
+    }
+
+    init();
+
+    const themeBtn = document.getElementById('themeToggle');
+    function currentTheme() {
+      return document.documentElement.getAttribute('data-theme') || 'light';
+    }
+    function setTheme(next) {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('simmer-theme', next); } catch (error) {}
+      themeBtn.setAttribute('aria-pressed', String(next === 'dark'));
+      themeBtn.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+    try {
+      const saved = localStorage.getItem('simmer-theme');
+      if (saved === 'dark' || saved === 'light') setTheme(saved);
+    } catch (error) {}
+    if (!localStorage.getItem('simmer-theme')) setTheme('light');
+
+    document.querySelectorAll('[data-back="archive"]').forEach(function(link) {
+      link.addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.assign('recipes.html');
+      });
+    });
+
+    // Removed pushState/popstate handling so back navigation uses plain links
+
+    themeBtn.addEventListener('click', function() {
+      setTheme(currentTheme() === 'dark' ? 'light' : 'dark');
+    });
+  </script>
+</body>
+</html>
