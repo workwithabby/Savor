@@ -1605,17 +1605,17 @@
 <section class="featured reveal">
   <div class="wrap featured-grid">
     <div>
-      <span class="eyebrow">Recipe of the week</span>
-      <h2>Weeknight Vegan Pad Thai</h2>
-      <p>Tamarind, garlic, and crisped tofu, on the table faster than delivery would arrive, and better the next day cold from the fridge.</p>
+      <span class="eyebrow">Fresh Ideas</span>
+      <h2>Make dinner feel less like a chore and more like an adventure.</h2>
+      <p>Quick ideas, helpful swaps, and ingredients that stretch further without sacrificing flavor.</p>
       <div class="chips">
-        <span class="chip meal">Dinner</span>
-        <span class="chip diet">Vegan</span>
-        <span class="chip cuisine">Thai</span>
-        <span class="chip method">25 Min</span>
+        <span class="chip meal">Breakfast</span>
+        <span class="chip diet">Lunch</span>
+        <span class="chip cuisine">Dinner</span>
+        <span class="chip method">Dessert</span>
       </div>
       <div class="hero-ctas" style="margin-top:32px;">
-        <a href="#" class="btn btn-primary">Get the recipe</a>
+        <a href="recipes.html" class="btn btn-primary">Browse Recipes</a>
       </div>
     </div>
     <div class="featured-visual">
@@ -1874,7 +1874,7 @@
         return '<li>' + ingredient + '</li>';
       }).join('');
       if (item.recipe && item.recipe.id) {
-        spotlightCard.setAttribute('href', 'recipe.html?id=' + item.recipe.id);
+        spotlightCard.setAttribute('href', 'recipe-info.html?id=' + item.recipe.id);
       } else {
         spotlightCard.setAttribute('href', '#recipes');
       }
@@ -2016,7 +2016,7 @@
       } catch (e) { console.debug('savor: click store error', e); }
       card.classList.add('card-launching');
       setTimeout(function() {
-        window.location.href = 'recipe.html?id=' + targetId;
+        window.location.href = 'recipe-info.html?id=' + targetId;
       }, 220);
     });
     card.addEventListener('keydown', function(event) {
@@ -2030,7 +2030,7 @@
         } catch (e) { console.debug('savor: key store error', e); }
         card.classList.add('card-launching');
         setTimeout(function() {
-          window.location.href = 'recipe.html?id=' + targetId;
+          window.location.href = 'recipe-info.html?id=' + targetId;
         }, 220);
       }
     });

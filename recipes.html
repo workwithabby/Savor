@@ -697,7 +697,7 @@
         grid.innerHTML = '<div class="empty-state">No recipes match that search or category yet. Try another keyword or reset the filter.</div>';
       } else {
         grid.innerHTML = filtered.map((recipe) => `
-          <a href="recipe.html?id=${recipe.id}" data-id="${recipe.id}" class="card" aria-label="Open ${recipe.title}">
+          <a href="recipe-info.html?id=${recipe.id}" data-id="${recipe.id}" class="card" aria-label="Open ${recipe.title}">
             <div class="card-visual" data-label="${(recipe.meta || []).slice(-1)[0] || ''}" style="background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.26)), url('${recipe.image}') center/cover no-repeat;"></div>
             <div>
               <div class="eyebrow" style="margin-bottom:10px; color: var(--coral);">${recipe.tag}</div>
