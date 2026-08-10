@@ -623,6 +623,18 @@
     <section class="recipe-grid" id="allRecipeGrid" aria-live="polite"></section>
   </main>
 
+  <script>
+    (async function() {
+      try {
+        const response = await fetch('/api/supabase-config');
+        const config = await response.json();
+        if (config.url) window.SUPABASE_URL = config.url;
+        if (config.anonKey) window.SUPABASE_ANON_KEY = config.anonKey;
+      } catch (error) {
+        console.warn('Supabase runtime config could not be loaded from Vercel.', error);
+      }
+    })();
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
   <script src="recipe-data.js"></script>
   <script src="supabase-client.js"></script>
