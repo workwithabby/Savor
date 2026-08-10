@@ -14,6 +14,16 @@ Savor is a clean and modern recipe app that helps users:
 
 The goal is to make finding dinner ideas easier, faster, and more enjoyable.
 
+## Screenshots
+
+<div style="display: flex; overflow-x: auto; white-space: nowrap; gap: 10px;">
+  <img src="screenshots/image-1.png" width="300" alt="Homepage">
+  <img src="screenshots/image-2.png" width="300" alt="Homepage-Recipes">
+  <img src="screenshots/image-3.png" width="300" alt="All Recipes">
+  <img src="screenshots/image-4.png" width="300" alt="Recipe Info">
+
+</div>
+
 ## Developed By
 
 This project was developed by me and built as a lightweight web app for recipe browsing.
