@@ -80,6 +80,11 @@
       -webkit-font-smoothing: antialiased;
       animation: pageIn 0.48s var(--ease);
       transition: background 0.3s ease, color 0.3s ease;
+      opacity: 0;
+    }
+
+    body.ready {
+      opacity: 1;
     }
 
     @keyframes pageIn {
@@ -474,6 +479,8 @@
 
     function renderRecipe(recipe) {
       console.log('renderRecipe called with recipe:', recipe);
+      document.body.classList.add('ready');
+
       if (!recipe) {
         titleEl.textContent = 'Recipe not found';
         summaryEl.textContent = 'This recipe is no longer available.';

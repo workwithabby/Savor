@@ -1861,6 +1861,15 @@
   var spotlightPreview = document.getElementById('spotlightPreview');
   var spotlightIndex = 0;
 
+  function persistFeaturedRecipe(recipe) {
+    if (!recipe || !recipe.id) return;
+    try {
+      sessionStorage.setItem('savor_selected_recipe', JSON.stringify(normalizeRecipe ? normalizeRecipe(recipe) : recipe));
+    } catch (error) {
+      console.debug('savor: feature persist error', error);
+    }
+  }
+
   function renderSpotlight(nextIndex) {
     if (!spotlightCard || !spotlightLabel || !spotlightTitle || !spotlightMeta || !spotlightList || !spotlightPreview) return;
     var item = spotlightItems[nextIndex];
@@ -1881,6 +1890,13 @@
       }
       spotlightCard.classList.remove('is-swapping');
     }, 180);
+  }
+
+  if (spotlightCard) {
+    spotlightCard.addEventListener('click', function() {
+      var activeItem = spotlightItems[spotlightIndex] || {};
+      persistFeaturedRecipe(activeItem.recipe || null);
+    });
   }
 
   renderSpotlight(spotlightIndex);
