@@ -1,7 +1,8 @@
 function getSupabaseConfig() {
   const runtimeWindow = typeof window !== 'undefined' ? window : {};
-  const configuredUrl = runtimeWindow.SUPABASE_URL || runtimeWindow.__SUPABASE_URL__ || '';
-  const configuredKey = runtimeWindow.SUPABASE_ANON_KEY || runtimeWindow.__SUPABASE_ANON_KEY__ || '';
+  const runtimeConfig = runtimeWindow.__SAVOR_SUPABASE_CONFIG__ || {};
+  const configuredUrl = runtimeWindow.SUPABASE_URL || runtimeConfig.url || runtimeWindow.__SUPABASE_URL__ || '';
+  const configuredKey = runtimeWindow.SUPABASE_ANON_KEY || runtimeConfig.anonKey || runtimeWindow.__SUPABASE_ANON_KEY__ || '';
 
   return {
     url: String(configuredUrl || '').trim(),
@@ -12,8 +13,16 @@ function getSupabaseConfig() {
 let supabaseClient = null;
 
 async function ensureSupabaseClient() {
-  if (supabaseClient || typeof supabase === 'undefined') {
+  if (supabaseClient) {
     return supabaseClient;
+  }
+
+  if (typeof window !== 'undefined' && window.__SAVOR_SUPABASE_CONFIG_READY__) {
+    await window.__SAVOR_SUPABASE_CONFIG_READY__;
+  }
+
+  if (typeof supabase === 'undefined') {
+    return null;
   }
 
   const { url, key } = getSupabaseConfig();

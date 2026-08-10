@@ -425,12 +425,19 @@
   </main>
 
   <script>
-    (async function() {
+    window.__SAVOR_SUPABASE_CONFIG__ = window.__SAVOR_SUPABASE_CONFIG__ || { url: '', anonKey: '' };
+    window.__SAVOR_SUPABASE_CONFIG_READY__ = (async function() {
       try {
         const response = await fetch('/api/supabase-config');
         const config = await response.json();
-        if (config.url) window.SUPABASE_URL = config.url;
-        if (config.anonKey) window.SUPABASE_ANON_KEY = config.anonKey;
+        if (config.url) {
+          window.__SAVOR_SUPABASE_CONFIG__.url = config.url;
+          window.SUPABASE_URL = config.url;
+        }
+        if (config.anonKey) {
+          window.__SAVOR_SUPABASE_CONFIG__.anonKey = config.anonKey;
+          window.SUPABASE_ANON_KEY = config.anonKey;
+        }
       } catch (error) {
         console.warn('Supabase runtime config could not be loaded from Vercel.', error);
       }
