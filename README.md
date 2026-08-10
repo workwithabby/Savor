@@ -21,10 +21,10 @@ This project was developed by me and built as a lightweight web app for recipe b
 ## Tech Stack
 
 | **Frontend** | **Backend/Database** | **Hosting/Deployment** |
-| ------------ | -------------------- | ---------------------- |
-|   :HTML:     |      :Supabase:      |       :Vercel:         |
-|   :CSS:      |                      |                        |
-| :Javascript: |                      |                        |
+| :----------: | :------------------: | :--------------------: |
+|     HTML     |       Supabase       |         Vercel         |
+|     CSS      |                      |                        |
+|  Javascript  |                      |                        |
 
 ## Features
 
