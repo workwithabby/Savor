@@ -297,6 +297,153 @@
     box-shadow: 0 12px 20px -16px rgba(232, 90, 59, 0.45);
   }
 
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 17, 13, 0.78);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 200;
+  }
+
+  .modal-backdrop.active {
+    display: flex;
+    animation: modalFadeIn 0.3s var(--ease);
+  }
+
+  .modal-card {
+    width: min(460px, 100%);
+    border-radius: 28px;
+    border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--bg-elevated) 94%, transparent), color-mix(in srgb, var(--bg) 92%, transparent));
+    box-shadow: 0 30px 70px -32px rgba(0, 0, 0, 0.58);
+    padding: 24px 24px 22px;
+    position: relative;
+    overflow: hidden;
+    transform: translateY(8px) scale(0.985);
+    opacity: 0;
+    animation: modalCardIn 0.36s var(--ease) forwards;
+  }
+
+  .modal-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, color-mix(in srgb, var(--coral) 15%, transparent), transparent 38%);
+    pointer-events: none;
+  }
+
+  .modal-card::after {
+    content: '';
+    position: absolute;
+    inset: auto -10% -40% auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--gold) 16%, transparent), transparent 68%);
+    filter: blur(18px);
+    pointer-events: none;
+  }
+
+  .modal-card h3 {
+    font-family: var(--display);
+    font-size: 1.26rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .modal-card p {
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .modal-card input {
+    width: 100%;
+    border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+    border-radius: 999px;
+    padding: 13px 15px;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    color: var(--ink);
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .modal-card input:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--coral) 55%, var(--line));
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--coral) 12%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .modal-card .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .modal-card .btn {
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .modal-card .btn:hover,
+  .modal-card .btn:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--coral) 45%, var(--line));
+    box-shadow: 0 10px 18px -14px rgba(232, 90, 59, 0.35);
+  }
+
+  .modal-card .btn.primary {
+    background: linear-gradient(135deg, var(--coral), var(--gold));
+    color: var(--btn-text);
+    border-color: transparent;
+    box-shadow: 0 12px 24px -16px rgba(232, 90, 59, 0.45);
+  }
+
+  .modal-card .error {
+    color: var(--coral);
+    font-size: 0.92rem;
+    min-height: 1.2em;
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes modalCardIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
   .header-meta {
     display: flex;
     align-items: center;
@@ -688,12 +835,28 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    margin: 16px 0;
+    margin: 16px 0 24px;
     flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .result-count-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--ink);
+    font-size: 0.96rem;
+    line-height: 1.35;
+    white-space: nowrap;
   }
 
   .result-count-row strong {
     font-weight: 700;
+  }
+
+  .result-count-row .highlight-link {
+    margin-left: auto;
+    white-space: nowrap;
   }
 
   .highlight-link {
@@ -1519,85 +1682,11 @@
     </div>
 
     <div class="result-count-row reveal in-view" id="resultCount" style="--delay: 0.12s;">
-      <span><strong>6</strong> recipes</span>
+      <span class="result-count-text">Showing <strong id="resultCountValue">0</strong> recipes</span>
       <a href="recipes.html" class="highlight-link">See more recipes</a>
     </div>
 
-    <div class="grid" id="recipe-grid">
-
-      <div class="card reveal" data-id="0" data-meal="dinner" data-diet="dairy-free" data-cuisine="filipino" data-method="slow-cooked">
-        <svg class="card-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M8 18h24v3c0 8-5 14-12 14S8 29 8 21v-3z" stroke="currentColor" stroke-width="1.6"/><rect x="8" y="15" width="24" height="4" rx="2" fill="currentColor"/></svg>
-        <h3>Chicken Adobo, the Sunday Batch</h3>
-        <p>Soy, cane vinegar, bay, and enough black pepper to mean it. Better on day two.</p>
-        <div class="chips">
-          <span class="chip meal">Dinner</span>
-          <span class="chip diet">Dairy-Free</span>
-          <span class="chip cuisine">Filipino</span>
-          <span class="chip method">Slow-Cooked</span>
-        </div>
-      </div>
-
-      <div class="card reveal" data-id="2" data-recipe='{"id":1,"tag":"Fastest win","title":"Weeknight Vegan Pad Thai","summary":"Tamarind, crispy tofu, and a quick sauce do the heavy lifting here. This is the kind of noodle bowl that tastes like a treat but still feels like a pantry supper.","image":"https://thecheekychickpea.com/wp-content/uploads/2019/05/vegan-pad-thai-1-1.jpg","meta":["25 min","2 serves","Fresh"],"meal":"dinner","diet":"vegan","cuisine":"thai","method":"quick","category":"Dinner","ingredients":["200 g rice noodles","180 g tofu","1 tbsp tamarind paste","2 tbsp soy sauce","1 lime","bean sprouts","peanuts"],"steps":["Soak the noodles until just pliable, then drain and set aside.","Crisp the tofu in a hot pan with a little oil until golden on most sides.","Whisk tamarind, soy, chili, and lime, then toss with noodles and tofu until glossy.","Top with sprouts, peanuts, and extra lime before serving."]}' data-meal="dinner" data-diet="vegan" data-cuisine="thai" data-method="quick">
-        <svg class="card-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><ellipse cx="20" cy="22" rx="13" ry="8" stroke="currentColor" stroke-width="1.6"/><path d="M9 21c1 8 6 13 11 13s10-5 11-13" stroke="currentColor" stroke-width="1.6"/></svg>
-        <h3>Weeknight Vegan Pad Thai</h3>
-        <p>Tamarind, garlic, crisped tofu. Faster than delivery, better cold the next day.</p>
-        <div class="chips">
-          <span class="chip meal">Dinner</span>
-          <span class="chip diet">Vegan</span>
-          <span class="chip cuisine">Thai</span>
-          <span class="chip method">25 Min</span>
-        </div>
-      </div>
-
-      <div class="card reveal" data-id="3" data-meal="lunch" data-diet="gluten-free" data-cuisine="mediterranean" data-method="baked">
-        <svg class="card-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="7" y="14" width="26" height="18" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 20h26" stroke="currentColor" stroke-width="1.6"/></svg>
-        <h3>Sheet-Pan Greek Chicken & Veg</h3>
-        <p>One tray, one oven, lunch for the next three days without repeating a dish.</p>
-        <div class="chips">
-          <span class="chip meal">Lunch</span>
-          <span class="chip diet">Gluten-Free</span>
-          <span class="chip cuisine">Mediterranean</span>
-          <span class="chip method">Baked</span>
-        </div>
-      </div>
-
-      <div class="card reveal" data-id="4" data-meal="snack" data-diet="vegan" data-cuisine="mexican" data-method="quick">
-        <svg class="card-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="1.6"/><path d="M20 12v16M12 20h16" stroke="currentColor" stroke-width="1.4" opacity="0.6"/></svg>
-        <h3>Five-Ingredient Guac & Chips</h3>
-        <p>Avocado, lime, salt, onion, cilantro. Done before the chips finish crisping.</p>
-        <div class="chips">
-          <span class="chip meal">Snack</span>
-          <span class="chip diet">Vegan</span>
-          <span class="chip cuisine">Mexican</span>
-          <span class="chip method">10 Min</span>
-        </div>
-      </div>
-
-      <div class="card reveal" data-id="5" data-recipe='{"id":4,"tag":"Backyard favorite","title":"Grilled Miso-Butter Salmon","summary":"A bright miso glaze gives the salmon a glossy finish without feeling heavy. It sits perfectly between sweet and savory and cooks in a handful of minutes on a hot grill.","image":"https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=1200&q=80","meta":["20 min","2 serves","High protein"],"meal":"dinner","diet":"keto","cuisine":"japanese","method":"grilled","category":"Dinner","ingredients":["2 salmon fillets","1 tbsp white miso","1 tbsp butter","1 tsp soy sauce","1 tsp rice vinegar","spring onions"],"steps":["Warm the miso, butter, soy, and vinegar together until smooth and glossy.","Brush the salmon with the glaze and grill over medium heat until the edges just start to char.","Flip once, then spoon over the remaining glaze as it finishes cooking.","Serve with a quick cucumber salad or steamed greens."]}' data-meal="dinner" data-diet="keto" data-cuisine="japanese" data-method="grilled">
-        <svg class="card-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M8 22c4-10 20-10 24 0-4 6-20 6-24 0z" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="21" r="1.4" fill="currentColor"/></svg>
-        <h3>Grilled Miso-Butter Salmon</h3>
-        <p>Five minutes a side, a miso glaze that caramelizes right at the edges.</p>
-        <div class="chips">
-          <span class="chip meal">Dinner</span>
-          <span class="chip diet">Keto</span>
-          <span class="chip cuisine">Japanese</span>
-          <span class="chip method">Grilled</span>
-        </div>
-      </div>
-
-      <div class="card reveal" data-id="6" data-recipe='{"id":5,"tag":"Morning ease","title":"Overnight Oats, Four Ways","summary":"The base is the same, but the flavor shifts by pantry mood: cinnamon, berries, tahini, or cocoa. There is no hurry in the morning, only a jar you already solved.","image":"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=1200&q=80","meta":["5 min","1 serve","Breakfast"],"meal":"breakfast","diet":"vegetarian","cuisine":"global","method":"quick","category":"Breakfast","ingredients":["1/2 cup oats","3/4 cup milk","1 tbsp chia seeds","1 tsp maple syrup","fruit or nuts of choice"],"steps":["Combine oats, milk, chia, and sweetener in a jar and stir well.","Leave it overnight so the mixture thickens and softens.","In the morning add fruit, nut butter, or toasted seeds for a different finish each day."]}' data-meal="breakfast" data-diet="vegetarian" data-cuisine="global" data-method="quick">
-        <svg class="card-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M10 16h20l-2 16a4 4 0 01-4 3.5H16a4 4 0 01-4-3.5L10 16z" stroke="currentColor" stroke-width="1.6"/></svg>
-        <h3>Overnight Oats, Four Ways</h3>
-        <p>Five minutes the night before, four flavor riffs, zero morning decisions.</p>
-        <div class="chips">
-          <span class="chip meal">Breakfast</span>
-          <span class="chip diet">Vegetarian</span>
-          <span class="chip cuisine">Global</span>
-          <span class="chip method">5 Min</span>
-        </div>
-      </div>
-
-    </div>
+    <div class="grid" id="recipe-grid"></div>
     <div class="empty-state" id="emptyState" hidden>No recipes match all of those filters yet - try clearing one.</div>
   </div>
 </section>
@@ -1651,6 +1740,10 @@
   </div>
   <div class="wrap footer-fine">Savor - find what to cook, est. 2026.</div>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+<script src="recipe-data.js"></script>
+<script src="supabase-client.js"></script>
 
 <script>
   /* ---- theme toggle ---- */
@@ -1761,11 +1854,45 @@
       spotlightList.innerHTML = item.ingredients.map(function(ingredient) {
         return '<li>' + ingredient + '</li>';
       }).join('');
+      if (item.recipe && item.recipe.id) {
+        spotlightCard.setAttribute('href', 'recipe.html?id=' + item.recipe.id);
+      } else {
+        spotlightCard.setAttribute('href', '#recipes');
+      }
       spotlightCard.classList.remove('is-swapping');
     }, 180);
   }
 
   renderSpotlight(spotlightIndex);
+
+  async function loadFeaturedSpotlight() {
+    if (typeof getFeaturedRecipes !== 'function') return;
+    try {
+      var featured = await getFeaturedRecipes();
+      if (!Array.isArray(featured) || !featured.length) return;
+      spotlightItems = featured.map(function(item) {
+        var recipe = item.recipe || {};
+        return {
+          label: item.label || 'Featured',
+          title: recipe.title || 'Recipe of the week',
+          meta: [
+            (recipe.meta || [])[0],
+            recipe.diet,
+            recipe.cuisine
+          ].filter(Boolean).join(' • '),
+          ingredients: (recipe.ingredients || []).slice(0, 5),
+          image: item.image_override ? "url('" + item.image_override + "')" : (recipe.image ? "url('" + recipe.image + "')" : ''),
+          recipe: recipe
+        };
+      });
+      spotlightIndex = 0;
+      renderSpotlight(spotlightIndex);
+    } catch (error) {
+      console.warn('Failed to load featured recipes from Supabase', error);
+    }
+  }
+
+  loadFeaturedSpotlight();
 
   if (!reduceMotion) {
     setInterval(function() {
@@ -1843,7 +1970,11 @@
   }
 
   /* ---- recipe page navigation ---- */
-  var cards = document.querySelectorAll('#recipe-grid .card');
+  var recipeCatalog = [];
+  var cards = [];
+  var countEl = document.getElementById('resultCountValue');
+  var emptyEl = document.getElementById('emptyState');
+
   function cardToId(card, fallbackIndex) {
     if (card.dataset && card.dataset.id) return Number(card.dataset.id);
     var titleEl = card.querySelector('h3');
@@ -1855,12 +1986,12 @@
     return fallbackIndex;
   }
 
-  cards.forEach(function(card, index) {
+  function bindRecipeCard(card, recipe) {
     card.style.cursor = 'pointer';
     card.addEventListener('click', function() {
-      var targetId = cardToId(card, index);
+      var targetId = cardToId(card, recipe && recipe.id ? recipe.id : 0);
       try {
-        var match = (window.SAVOR_RECIPES || []).find(function(r) { return String(r.id) === String(targetId); });
+        var match = recipeCatalog.find(function(r) { return String(r.id) === String(targetId); });
         if (match) sessionStorage.setItem('savor_selected_recipe', JSON.stringify(match));
         console.debug('savor: click -> targetId=', targetId, 'matchId=', match && match.id, 'title=', match && match.title);
       } catch (e) { console.debug('savor: click store error', e); }
@@ -1872,9 +2003,9 @@
     card.addEventListener('keydown', function(event) {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        var targetId = cardToId(card, index);
+        var targetId = cardToId(card, recipe && recipe.id ? recipe.id : 0);
         try {
-          var match = (window.SAVOR_RECIPES || []).find(function(r) { return String(r.id) === String(targetId); });
+          var match = recipeCatalog.find(function(r) { return String(r.id) === String(targetId); });
           if (match) sessionStorage.setItem('savor_selected_recipe', JSON.stringify(match));
           console.debug('savor: key activate -> targetId=', targetId, 'matchId=', match && match.id, 'title=', match && match.title);
         } catch (e) { console.debug('savor: key store error', e); }
@@ -1887,15 +2018,83 @@
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
     card.setAttribute('aria-label', 'Open recipe: ' + (card.querySelector('h3') ? card.querySelector('h3').textContent : 'recipe'));
-  });
+  }
+
+  function buildRecipeCard(recipe) {
+    var card = document.createElement('article');
+    card.className = 'card reveal';
+    card.dataset.id = recipe.id;
+    card.dataset.meal = String(recipe.meal || '').toLowerCase();
+    card.dataset.diet = String(recipe.diet || '').toLowerCase();
+    card.dataset.cuisine = String(recipe.cuisine || '').toLowerCase();
+    card.dataset.method = String(recipe.method || '').toLowerCase();
+    card.innerHTML = [
+      '<h3>' + (recipe.title || 'Untitled recipe') + '</h3>',
+      '<p>' + (recipe.summary || '') + '</p>',
+      '<div class="chips">',
+      '<span class="chip meal">' + (recipe.category || recipe.meal || 'Recipe') + '</span>',
+      recipe.diet ? '<span class="chip diet">' + recipe.diet + '</span>' : '',
+      recipe.cuisine ? '<span class="chip cuisine">' + recipe.cuisine + '</span>' : '',
+      recipe.meta && recipe.meta[0] ? '<span class="chip method">' + recipe.meta[0] + '</span>' : '',
+      '</div>'
+    ].join('');
+    return card;
+  }
+
+  function renderRecipes(recipes) {
+    recipeCatalog = (recipes || []).map(function(recipe) {
+      return normalizeRecipe(recipe);
+    });
+
+    var grid = document.getElementById('recipe-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    if (!recipeCatalog.length) {
+      grid.innerHTML = '<div class="empty-state">No recipes are available yet. Add recipes to the database to populate this section.</div>';
+      if (countEl) countEl.textContent = '0';
+      if (emptyEl) emptyEl.hidden = false;
+      return;
+    }
+
+    var frag = document.createDocumentFragment();
+    recipeCatalog.forEach(function(recipe) {
+      var card = buildRecipeCard(recipe);
+      card.classList.add('in-view');
+      frag.appendChild(card);
+    });
+    grid.appendChild(frag);
+
+    cards = Array.prototype.slice.call(document.querySelectorAll('#recipe-grid .card'));
+    cards.forEach(function(card, index) {
+      bindRecipeCard(card, recipeCatalog[index]);
+    });
+    applyFilters();
+  }
+
+  async function loadRecipesFromDatabase() {
+    if (typeof fetchRecipesFromSupabaseDirect !== 'function') {
+      renderRecipes([]);
+      return;
+    }
+
+    try {
+      var recipes = await fetchRecipesFromSupabaseDirect();
+      console.log('Supabase recipes loaded:', recipes);
+      renderRecipes(recipes);
+    } catch (error) {
+      console.error('Failed to load recipes from Supabase', error);
+      renderRecipes([]);
+    }
+  }
+
+  loadRecipesFromDatabase();
 
   /* ---- facet filtering ---- */
   var selMeal = document.getElementById('fMeal');
   var selDiet = document.getElementById('fDiet');
   var selCuisine = document.getElementById('fCuisine');
   var selMethod = document.getElementById('fMethod');
-  var countEl = document.getElementById('resultCount');
-  var emptyEl = document.getElementById('emptyState');
 
   function applyFilters() {
     var meal = selMeal.value, diet = selDiet.value, cuisine = selCuisine.value, method = selMethod.value;
@@ -1909,8 +2108,8 @@
       card.hidden = !match;
       if (match) visible++;
     });
-    countEl.innerHTML = '<strong>' + visible + '</strong> recipe' + (visible === 1 ? '' : 's');
-    emptyEl.hidden = visible !== 0;
+    if (countEl) countEl.textContent = visible;
+    if (emptyEl) emptyEl.hidden = visible !== 0;
   }
 
   [selMeal, selDiet, selCuisine, selMethod].forEach(function(sel) {

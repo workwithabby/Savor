@@ -438,7 +438,22 @@
     const params = new URLSearchParams(window.location.search);
     const id = Number(params.get('id'));
 
+    function ensureArray(value) {
+      if (Array.isArray(value)) return value;
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          return Array.isArray(parsed) ? parsed : [parsed];
+        } catch (e) {
+          return value ? [value] : [];
+        }
+      }
+      if (value == null) return [];
+      return [value];
+    }
+
     function renderRecipe(recipe) {
+      console.log('renderRecipe called with recipe:', recipe);
       if (!recipe) {
         titleEl.textContent = 'Recipe not found';
         summaryEl.textContent = 'This recipe is no longer available.';
@@ -449,14 +464,34 @@
         return;
       }
 
-      const normalizedRecipe = normalizeRecipe(recipe);
-      coverEl.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.26)), url("' + normalizedRecipe.image + '") center/cover no-repeat';
-      tagEl.textContent = normalizedRecipe.tag || '';
-      titleEl.textContent = normalizedRecipe.title || 'Recipe';
-      summaryEl.textContent = normalizedRecipe.summary || '';
-      metaEl.innerHTML = [normalizedRecipe.category, ...(normalizedRecipe.meta || [])].map(item => '<span>' + item + '</span>').join('');
-      ingredientsEl.innerHTML = (recipe.ingredients || []).map(item => '<li>' + item + '</li>').join('');
-      stepsEl.innerHTML = (recipe.steps || []).map((step, index) => '<li><strong>' + (index + 1) + '</strong><p>' + step + '</p></li>').join('');
+      try {
+        const normalizedRecipe = normalizeRecipe(recipe);
+        coverEl.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.26)), url("' + normalizedRecipe.image + '") center/cover no-repeat';
+        tagEl.textContent = normalizedRecipe.tag || '';
+        titleEl.textContent = normalizedRecipe.title || 'Recipe';
+        summaryEl.textContent = normalizedRecipe.summary || '';
+        metaEl.innerHTML = [normalizedRecipe.category, ...ensureArray(normalizedRecipe.meta)].map(item => '<span>' + item + '</span>').join('');
+        
+        ingredientsEl.innerHTML = ensureArray(recipe.ingredients).map(item => {
+          if (typeof item === 'object' && item !== null) {
+            return '<li>' + (item.name || '') + (item.amount ? ' — ' + item.amount : '') + '</li>';
+          }
+          return '<li>' + item + '</li>';
+        }).join('');
+        
+        stepsEl.innerHTML = ensureArray(recipe.steps).map((step, index) => {
+          const stepText = typeof step === 'object' ? (step.step || '') : step;
+          return '<li><strong>' + (index + 1) + '</strong><p>' + stepText + '</p></li>';
+        }).join('');
+      } catch (error) {
+        console.error('Error rendering recipe:', error, recipe);
+        titleEl.textContent = 'Recipe not available';
+        summaryEl.textContent = 'There was a problem displaying this recipe.';
+        coverEl.style.background = '';
+        metaEl.innerHTML = '';
+        ingredientsEl.innerHTML = '';
+        stepsEl.innerHTML = '';
+      }
     }
 
     function getLocalRecipe() {
@@ -475,43 +510,33 @@
     }
 
     async function init() {
-      // If a recipe was saved to sessionStorage by the list page, render it immediately
+      let storedRecipe = null;
+
       try {
         const stored = sessionStorage.getItem('savor_selected_recipe');
         if (stored) {
           const parsed = JSON.parse(stored);
           if (parsed && parsed.id != null) {
-            renderRecipe(parsed);
+            storedRecipe = parsed;
+            renderRecipe(normalizeRecipe(storedRecipe));
           }
-          // remove it to avoid stale data on subsequent navigations
           sessionStorage.removeItem('savor_selected_recipe');
         }
       } catch (e) {}
 
-      // Always attempt to fetch the canonical remote recipe and update when available
       const remoteResult = await loadRemoteRecipe();
       if (remoteResult?.status === 'remote' && remoteResult.recipe) {
         renderRecipe(remoteResult.recipe);
         return;
       }
 
-      // If remote fetch failed or recipe not found, fall back to local data (if not already rendered)
-      const localRecipe = getLocalRecipe();
-      if (localRecipe) {
-        renderRecipe(normalizeRecipe(localRecipe));
+      if (remoteResult?.status === 'not_found') {
+        if (!storedRecipe) renderRecipe(null);
         return;
       }
 
-      if (remoteResult?.status === 'not_found') {
-        titleEl.textContent = 'Recipe not found';
-        summaryEl.textContent = 'This recipe has been removed or is unavailable.';
-        coverEl.style.background = '';
-        metaEl.innerHTML = '';
-        ingredientsEl.innerHTML = '';
-        stepsEl.innerHTML = '';
-      } else {
-        titleEl.textContent = 'Recipe not found';
-        summaryEl.textContent = 'We could not locate that recipe.';
+      if (!storedRecipe) {
+        renderRecipe(null);
       }
     }
 

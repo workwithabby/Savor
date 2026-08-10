@@ -719,38 +719,30 @@
     }
 
     async function loadRecipes() {
-      const fallback = (window.SAVOR_RECIPES || []).map(normalizeRecipe);
       try {
         const remoteRecipes = await getAllRecipes();
-        if (Array.isArray(remoteRecipes) && remoteRecipes.length) {
-          return (remoteRecipes || []).map(normalizeRecipe);
-        }
+        return Array.isArray(remoteRecipes) ? remoteRecipes.map(normalizeRecipe) : [];
       } catch (error) {
-        console.warn('Failed to load recipes from Supabase, using local fallback.', error);
+        console.warn('Failed to load recipes from Supabase.', error);
+        return [];
       }
-      return fallback;
     }
 
     async function init() {
-      recipes = (window.SAVOR_RECIPES || []).map(normalizeRecipe);
       renderCategoryButtons();
-      renderRecipes();
+      grid.innerHTML = '<div class="empty-state">Loading recipes…</div>';
+      resultCount.textContent = '0';
+      resultLabel.textContent = 'Loading';
 
       try {
-        const remoteRecipes = await getAllRecipes();
-        if (Array.isArray(remoteRecipes) && remoteRecipes.length) {
-          // Avoid re-rendering if the remote data is identical to the local fallback
-          function idsKey(list) {
-            return (list || []).map(function(r) { return r && r.id; }).filter(Boolean).sort().join(',');
-          }
-          if (idsKey(remoteRecipes) !== idsKey(recipes)) {
-            recipes = (remoteRecipes || []).map(normalizeRecipe);
-            renderRecipes();
-          }
-        }
+        const remoteRecipes = await loadRecipes();
+        recipes = (remoteRecipes || []).map(normalizeRecipe);
       } catch (error) {
-        console.warn('Failed to load recipes from Supabase, keeping local fallback.', error);
+        console.warn('Failed to load recipes from Supabase, using local fallback.', error);
+        recipes = (window.SAVOR_RECIPES || []).map(normalizeRecipe);
       }
+
+      renderRecipes();
     }
 
     searchInput.addEventListener('input', function(event) {
